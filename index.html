@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vizuara Inference Workshop — Speaker Tracker</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: #0f1117;
+      color: #e1e4e8;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #f0f3f6;
+      margin-bottom: 0.25rem;
+    }
+
+    .subtitle {
+      color: #7a8299;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    .stats {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 10px;
+      padding: 1rem 1.5rem;
+      min-width: 160px;
+      flex: 1;
+    }
+
+    .stat-card .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #7a8299;
+      margin-bottom: 0.35rem;
+    }
+
+    .stat-card .value {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .stat-card .value.green { color: #3fb950; }
+    .stat-card .value.blue { color: #58a6ff; }
+    .stat-card .value.purple { color: #bc8cff; }
+
+    .table-wrapper {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 10px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    thead th {
+      text-align: left;
+      padding: 0.85rem 1rem;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #7a8299;
+      border-bottom: 1px solid #21262d;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+
+    tbody td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #21262d;
+      vertical-align: middle;
+    }
+
+    tbody tr:last-child td { border-bottom: none; }
+
+    tbody tr:hover { background: #1c2129; }
+
+    .speaker-name {
+      font-weight: 600;
+      color: #f0f3f6;
+    }
+
+    .company {
+      color: #58a6ff;
+      font-size: 0.8rem;
+    }
+
+    .company.none { color: #484f58; font-style: italic; }
+
+    .topic { color: #c9d1d9; max-width: 280px; }
+
+    .date-time {
+      white-space: nowrap;
+      color: #c9d1d9;
+    }
+
+    .date-time .day { font-weight: 600; color: #f0f3f6; }
+    .date-time .time { color: #7a8299; font-size: 0.8rem; }
+
+    .slides-due {
+      white-space: nowrap;
+      font-size: 0.8rem;
+    }
+
+    .slides-due.overdue { color: #f85149; font-weight: 600; }
+    .slides-due.soon { color: #d29922; }
+    .slides-due.ok { color: #7a8299; }
+
+    .check-cell {
+      text-align: center;
+    }
+
+    .check-cell input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #30363d;
+      border-radius: 4px;
+      background: #0d1117;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.15s ease;
+    }
+
+    .check-cell input[type="checkbox"]:hover {
+      border-color: #58a6ff;
+    }
+
+    .check-cell input[type="checkbox"]:checked {
+      background: #238636;
+      border-color: #238636;
+    }
+
+    .check-cell input[type="checkbox"]:checked::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 5px;
+      width: 5px;
+      height: 10px;
+      border: solid #fff;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    @media (max-width: 768px) {
+      body { padding: 1rem 0.5rem; }
+      h1 { font-size: 1.25rem; }
+      .stats { gap: 0.5rem; }
+      .stat-card { min-width: 100px; padding: 0.75rem 1rem; }
+      .stat-card .value { font-size: 1.2rem; }
+      table { font-size: 0.8rem; }
+      thead th, tbody td { padding: 0.6rem 0.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Vizuara Inference Workshop</h1>
+    <p class="subtitle">Speaker Tracker</p>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="label">Slides Received</div>
+        <div class="value green" id="stat-slides">0/9</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Messages Sent</div>
+        <div class="value blue" id="stat-messages">0/9</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Replied</div>
+        <div class="value purple" id="stat-replied">0/9</div>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Speaker</th>
+            <th>Company</th>
+            <th>Topic</th>
+            <th>Date &amp; Time (IST)</th>
+            <th>Slides Due</th>
+            <th>Slides Received</th>
+            <th>Message Sent</th>
+            <th>Replied</th>
+          </tr>
+        </thead>
+        <tbody id="speaker-table"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const speakers = [
+      { name: "Shubham Panchal", company: "Mastercard", topic: "On-Device LLM Deployment on Android", date: "2026-05-10T10:00", dateLabel: "Sunday, May 10", time: "10:00 AM \u2013 11:00 AM" },
+      { name: "Yash Dixit", company: "Apple", topic: "How Inference Is Done on LLMs at Apple", date: "2026-05-15T18:00", dateLabel: "Friday, May 15", time: "6:00 PM \u2013 7:30 PM" },
+      { name: "Suyash Harlalka", company: "Microsoft", topic: "Efficient Inference with Small Language Models", date: "2026-05-16T16:30", dateLabel: "Saturday, May 16", time: "4:30 PM \u2013 6:00 PM" },
+      { name: "Mohit", company: "\u2014", topic: "On Device AI: Making LLM Reach Every Corner", date: "2026-05-20T20:00", dateLabel: "Wednesday, May 20", time: "8:00 PM \u2013 9:30 PM" },
+      { name: "Shreyans Dhankhar", company: "NVIDIA", topic: "Disaggregated Inference", date: "2026-05-22T19:00", dateLabel: "Friday, May 22", time: "7:00 PM \u2013 8:30 PM" },
+      { name: "Suman Debnath", company: "AnyScale", topic: "Distributed Training at Scale with Ray", date: "2026-05-23T08:00", dateLabel: "Saturday, May 23", time: "8:00 AM \u2013 9:30 AM" },
+      { name: "Seiji Eicher", company: "AnyScale", topic: "Inference at Scale: Ray Serve + vLLM", date: "2026-05-24T20:30", dateLabel: "Sunday, May 24", time: "8:30 PM \u2013 10:00 PM" },
+      { name: "Harshul Jain", company: "AWS", topic: "Framework-Agnostic LLM Serving Architectures", date: "2026-05-29T18:00", dateLabel: "Friday, May 29", time: "6:00 PM \u2013 7:30 PM" },
+      { name: "Aayush Saini", company: "Red Hat", topic: "Next-Gen Multimodal Inference with Omni-VLLM", date: "2026-05-30T13:30", dateLabel: "Saturday, May 30", time: "1:30 PM \u2013 3:00 PM" },
+    ];
+
+    const STORAGE_KEY = "vizuara-speaker-tracker";
+
+    function loadState() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+      } catch { return {}; }
+    }
+
+    function saveState(state) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function getSlidesDue(dateStr) {
+      const talkDate = new Date(dateStr);
+      const due = new Date(talkDate);
+      due.setDate(due.getDate() - 7);
+      return due;
+    }
+
+    function formatSlidesDue(dateStr) {
+      const due = getSlidesDue(dateStr);
+      const now = new Date();
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const label = `${months[due.getMonth()]} ${due.getDate()}`;
+      const diffDays = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
+
+      let cls = "ok";
+      if (diffDays < 0) cls = "overdue";
+      else if (diffDays <= 3) cls = "soon";
+
+      return `<span class="slides-due ${cls}">${label}</span>`;
+    }
+
+    function render() {
+      const state = loadState();
+      const tbody = document.getElementById("speaker-table");
+      const total = speakers.length;
+
+      let counts = { slides: 0, message: 0, replied: 0 };
+
+      tbody.innerHTML = speakers.map((s, i) => {
+        const key = (field) => `${i}-${field}`;
+        const checked = (field) => state[key(field)] ? "checked" : "";
+
+        if (state[key("slides")]) counts.slides++;
+        if (state[key("message")]) counts.message++;
+        if (state[key("replied")]) counts.replied++;
+
+        const companyClass = s.company === "\u2014" ? "company none" : "company";
+
+        return `<tr>
+          <td class="speaker-name">${s.name}</td>
+          <td class="${companyClass}">${s.company}</td>
+          <td class="topic">${s.topic}</td>
+          <td class="date-time"><span class="day">${s.dateLabel}</span><br><span class="time">${s.time}</span></td>
+          <td>${formatSlidesDue(s.date)}</td>
+          <td class="check-cell"><input type="checkbox" data-key="${key("slides")}" ${checked("slides")}></td>
+          <td class="check-cell"><input type="checkbox" data-key="${key("message")}" ${checked("message")}></td>
+          <td class="check-cell"><input type="checkbox" data-key="${key("replied")}" ${checked("replied")}></td>
+        </tr>`;
+      }).join("");
+
+      document.getElementById("stat-slides").textContent = `${counts.slides}/${total}`;
+      document.getElementById("stat-messages").textContent = `${counts.message}/${total}`;
+      document.getElementById("stat-replied").textContent = `${counts.replied}/${total}`;
+
+      tbody.querySelectorAll("input[type=checkbox]").forEach(cb => {
+        cb.addEventListener("change", () => {
+          const st = loadState();
+          st[cb.dataset.key] = cb.checked;
+          saveState(st);
+          updateStats();
+        });
+      });
+    }
+
+    function updateStats() {
+      const state = loadState();
+      const total = speakers.length;
+      let counts = { slides: 0, message: 0, replied: 0 };
+      speakers.forEach((_, i) => {
+        if (state[`${i}-slides`]) counts.slides++;
+        if (state[`${i}-message`]) counts.message++;
+        if (state[`${i}-replied`]) counts.replied++;
+      });
+      document.getElementById("stat-slides").textContent = `${counts.slides}/${total}`;
+      document.getElementById("stat-messages").textContent = `${counts.message}/${total}`;
+      document.getElementById("stat-replied").textContent = `${counts.replied}/${total}`;
+    }
+
+    render();
+  </script>
+</body>
+</html>
