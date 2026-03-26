@@ -9,26 +9,26 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-      background: #0f1117;
-      color: #e1e4e8;
+      background: #f8f9fa;
+      color: #1a1a2e;
       min-height: 100vh;
       padding: 2rem 1rem;
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 1280px;
       margin: 0 auto;
     }
 
     h1 {
       font-size: 1.75rem;
       font-weight: 700;
-      color: #f0f3f6;
+      color: #1a1a2e;
       margin-bottom: 0.25rem;
     }
 
     .subtitle {
-      color: #7a8299;
+      color: #6b7280;
       font-size: 0.9rem;
       margin-bottom: 2rem;
     }
@@ -41,19 +41,20 @@
     }
 
     .stat-card {
-      background: #161b22;
-      border: 1px solid #21262d;
+      background: #fff;
+      border: 1px solid #e5e7eb;
       border-radius: 10px;
       padding: 1rem 1.5rem;
-      min-width: 160px;
+      min-width: 140px;
       flex: 1;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
 
     .stat-card .label {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: #7a8299;
+      color: #6b7280;
       margin-bottom: 0.35rem;
     }
 
@@ -62,15 +63,17 @@
       font-weight: 700;
     }
 
-    .stat-card .value.green { color: #3fb950; }
-    .stat-card .value.blue { color: #58a6ff; }
-    .stat-card .value.purple { color: #bc8cff; }
+    .stat-card .value.green { color: #16a34a; }
+    .stat-card .value.blue { color: #2563eb; }
+    .stat-card .value.purple { color: #7c3aed; }
+    .stat-card .value.orange { color: #ea580c; }
 
     .table-wrapper {
-      background: #161b22;
-      border: 1px solid #21262d;
+      background: #fff;
+      border: 1px solid #e5e7eb;
       border-radius: 10px;
       overflow-x: auto;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
 
     table {
@@ -85,52 +88,53 @@
       font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      color: #7a8299;
-      border-bottom: 1px solid #21262d;
+      color: #6b7280;
+      border-bottom: 1px solid #e5e7eb;
       white-space: nowrap;
       font-weight: 600;
+      background: #f9fafb;
     }
 
     tbody td {
       padding: 0.75rem 1rem;
-      border-bottom: 1px solid #21262d;
+      border-bottom: 1px solid #f3f4f6;
       vertical-align: middle;
     }
 
     tbody tr:last-child td { border-bottom: none; }
 
-    tbody tr:hover { background: #1c2129; }
+    tbody tr:hover { background: #f9fafb; }
 
     .speaker-name {
       font-weight: 600;
-      color: #f0f3f6;
+      color: #1a1a2e;
     }
 
     .company {
-      color: #58a6ff;
+      color: #2563eb;
       font-size: 0.8rem;
     }
 
-    .company.none { color: #484f58; font-style: italic; }
+    .company.none { color: #9ca3af; font-style: italic; }
 
-    .topic { color: #c9d1d9; max-width: 280px; }
+    .topic { color: #374151; max-width: 280px; }
 
     .date-time {
       white-space: nowrap;
-      color: #c9d1d9;
+      color: #374151;
     }
 
-    .date-time .day { font-weight: 600; color: #f0f3f6; }
-    .date-time .time { color: #7a8299; font-size: 0.8rem; }
+    .date-time .day { font-weight: 600; color: #1a1a2e; }
+    .date-time .time { color: #6b7280; font-size: 0.8rem; }
 
     .slides-due {
       white-space: nowrap;
       font-size: 0.8rem;
     }
 
-    .slides-due.overdue { color: #f85149; font-weight: 600; }
-    .slides-due.soon { color: #d29922; }
-    .slides-due.ok { color: #7a8299; }
+    .slides-due.overdue { color: #dc2626; font-weight: 600; }
+    .slides-due.soon { color: #d97706; }
+    .slides-due.ok { color: #6b7280; }
 
     .check-cell {
       text-align: center;
@@ -141,21 +145,21 @@
       -webkit-appearance: none;
       width: 20px;
       height: 20px;
-      border: 2px solid #30363d;
+      border: 2px solid #d1d5db;
       border-radius: 4px;
-      background: #0d1117;
+      background: #fff;
       cursor: pointer;
       position: relative;
       transition: all 0.15s ease;
     }
 
     .check-cell input[type="checkbox"]:hover {
-      border-color: #58a6ff;
+      border-color: #2563eb;
     }
 
     .check-cell input[type="checkbox"]:checked {
-      background: #238636;
-      border-color: #238636;
+      background: #16a34a;
+      border-color: #16a34a;
     }
 
     .check-cell input[type="checkbox"]:checked::after {
@@ -189,15 +193,19 @@
     <div class="stats">
       <div class="stat-card">
         <div class="label">Slides Received</div>
-        <div class="value green" id="stat-slides">0/9</div>
+        <div class="value green" id="stat-slides">0/10</div>
       </div>
       <div class="stat-card">
         <div class="label">Messages Sent</div>
-        <div class="value blue" id="stat-messages">0/9</div>
+        <div class="value blue" id="stat-messages">0/10</div>
       </div>
       <div class="stat-card">
         <div class="label">Replied</div>
-        <div class="value purple" id="stat-replied">0/9</div>
+        <div class="value purple" id="stat-replied">0/10</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Zoom Link Sent</div>
+        <div class="value orange" id="stat-zoom">0/10</div>
       </div>
     </div>
 
@@ -213,6 +221,7 @@
             <th>Slides Received</th>
             <th>Message Sent</th>
             <th>Replied</th>
+            <th>Zoom Link Sent</th>
           </tr>
         </thead>
         <tbody id="speaker-table"></tbody>
@@ -272,7 +281,7 @@
       const tbody = document.getElementById("speaker-table");
       const total = speakers.length;
 
-      let counts = { slides: 0, message: 0, replied: 0 };
+      let counts = { slides: 0, message: 0, replied: 0, zoom: 0 };
 
       tbody.innerHTML = speakers.map((s, i) => {
         const key = (field) => `${i}-${field}`;
@@ -281,6 +290,7 @@
         if (state[key("slides")]) counts.slides++;
         if (state[key("message")]) counts.message++;
         if (state[key("replied")]) counts.replied++;
+        if (state[key("zoom")]) counts.zoom++;
 
         const companyClass = s.company === "\u2014" ? "company none" : "company";
 
@@ -293,12 +303,14 @@
           <td class="check-cell"><input type="checkbox" data-key="${key("slides")}" ${checked("slides")}></td>
           <td class="check-cell"><input type="checkbox" data-key="${key("message")}" ${checked("message")}></td>
           <td class="check-cell"><input type="checkbox" data-key="${key("replied")}" ${checked("replied")}></td>
+          <td class="check-cell"><input type="checkbox" data-key="${key("zoom")}" ${checked("zoom")}></td>
         </tr>`;
       }).join("");
 
       document.getElementById("stat-slides").textContent = `${counts.slides}/${total}`;
       document.getElementById("stat-messages").textContent = `${counts.message}/${total}`;
       document.getElementById("stat-replied").textContent = `${counts.replied}/${total}`;
+      document.getElementById("stat-zoom").textContent = `${counts.zoom}/${total}`;
 
       tbody.querySelectorAll("input[type=checkbox]").forEach(cb => {
         cb.addEventListener("change", () => {
@@ -313,15 +325,17 @@
     function updateStats() {
       const state = loadState();
       const total = speakers.length;
-      let counts = { slides: 0, message: 0, replied: 0 };
+      let counts = { slides: 0, message: 0, replied: 0, zoom: 0 };
       speakers.forEach((_, i) => {
         if (state[`${i}-slides`]) counts.slides++;
         if (state[`${i}-message`]) counts.message++;
         if (state[`${i}-replied`]) counts.replied++;
+        if (state[`${i}-zoom`]) counts.zoom++;
       });
       document.getElementById("stat-slides").textContent = `${counts.slides}/${total}`;
       document.getElementById("stat-messages").textContent = `${counts.message}/${total}`;
       document.getElementById("stat-replied").textContent = `${counts.replied}/${total}`;
+      document.getElementById("stat-zoom").textContent = `${counts.zoom}/${total}`;
     }
 
     render();
